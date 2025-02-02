@@ -134,5 +134,30 @@ app.post("/debtCalculator", authenticateApp, (req, res) => {
     }
 
     return res.json(result);
+});
+
+app.post("/login", async (req, res) => {
+    const username = req.body.username;
+    const password = req.body.password;
+    const findUser = await users.findOne({ username: username });
+
+    try {
+        if (!findUser) {
+            res.json({
+                msg: "User does not exist, please go to signin page"
+            })
+        } else {
+            // generate a token
+            const token = jwt.sign({ username }, SECRET_KEY);
+            res.header("Authorization", `Bearer; ${token}`)
+            return res.json({
+                msg: "Token generated",
+                token: token
+            })
+        }
+    } catch (error) {
+        console.log(error);
+    }
 })
 
+  
