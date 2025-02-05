@@ -1,0 +1,43 @@
+<html>
+    <head>
+      <title>Signin</title>
+      <link rel="stylesheet" href="/styles/signup.css"
+    </head>
+    <body>
+        <nav id="navbar">  
+            <a id="app" href="/index.html">ZCount</a>  
+            <a id="login" href="/login.html">Login</a>
+
+          </nav>
+
+        <form id="signupForm">
+            <input id="username" name="username" type="text" placeholder="Please enter your username">
+            <input id="password" name="password" type="text" placeholder="Please enter your password">
+            <button type="submit">Sign up</button>
+        </form>
+
+        <script>
+            document.getElementById("signupForm").addEventListener("submit", async (e) => {
+                e.preventDefault();
+                const username = document.getElementById("username").value;
+                const password = document.getElementById("password").value;
+
+               const resposne = await fetch('/signin', {   
+                method: "post",
+                headers: {  
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({username, password}),
+               })
+
+               const data = await resposne.json();
+               if(data.token){
+                localStorage.setItem('token', data.token);
+                window.location.href = '/debtCalculator.html';   
+            } else {
+                alert(data.msg || 'Login failed');
+            }
+            })
+        </script>
+    </body>  
+</html>

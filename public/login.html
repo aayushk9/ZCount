@@ -1,0 +1,44 @@
+<html>
+<head>
+    <title>Log in</title>
+    <link rel="stylesheet" href="/styles/login.css">   
+</head>
+<body>
+
+    <nav>  
+        <a id="app" href="/index.html">ZCount</a>  
+        <a id="signup" href="/signup.html">Sign up</a>
+      </nav>   
+
+    <form id="loginForm">
+        <input id="username" name="username" type="text" placeholder="Enter username" autocomplete="username" required>
+        <input id="password" name="password" type="password" placeholder="Enter password" autocomplete="current-password" required>
+        <br>
+        <button type="submit">Log in</button>
+    </form>
+    
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const res = await fetch('/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await res.json();
+
+            if (data.token) {
+                localStorage.setItem('token', data.token);
+                window.location.href = '/debtCalculator.html';
+            } else {
+                alert(data.msg || 'Login failed');
+            }
+        });
+    </script>
+</body>
+</html>

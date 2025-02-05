@@ -1,0 +1,57 @@
+
+<html>
+<head>
+    <title>Sleep Debt Calculations</title>  
+    <link rel="stylesheet" href="/styles/debt.css">   
+</head>
+<body>
+
+    <nav id="navbar">  
+        <a id="app" href="/index.html">ZCount</a>     
+      </nav>
+
+    <h1>Welcome to ZCount</h1>
+    
+    <form id="debtForm">
+
+        <input type="number" id="days" name="days" placeholder="Enter number of days" min="3" required>
+        <input type="text" id="sleepingHours" name="sleepingHours" placeholder="Enter hours for each day e.g. 7,8,6,4,7" required>
+
+        <button type="submit">Calculate</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        async function checkAuth() {
+            const token = localStorage.getItem('token');
+            if (!token) {
+                alert('Please login first!');
+                window.location.href = '/login.html';
+            }
+        }
+
+        document.addEventListener('DOMContentLoaded', checkAuth);
+
+        document.getElementById('debtForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+
+            const token = localStorage.getItem('token'); 
+            const days = document.getElementById('days').value;
+            const sleepingHours = document.getElementById('sleepingHours').value.split(',').map(Number);
+
+            const res = await fetch('/debtCalculator', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`  
+                },
+                body: JSON.stringify({ days, sleepingHours })
+            });
+
+            const data = await res.json();
+            document.getElementById('result').innerText = data.message || data.msg;
+        });
+    </script>
+</body>
+</html>
