@@ -34,6 +34,10 @@ app.listen(port, () => {
 app.post("/signin", async (req, res) => {
   const { username, password } = req.body;
 
+  if(!username || !password){
+    return res.status(400).json({msg: "Username and password are required"});
+  }
+
   const signinSchema = zod.object({
     username: zod.string(),
     password: zod.string(),
@@ -49,38 +53,48 @@ app.post("/signin", async (req, res) => {
     const findUser = await users.findOne({ username });
 
     if (!findUser) {
-      const newUser = new users({ username, password });
+      const newUser = new users({ username, password });   
       await newUser.save();
 
       const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
-      res.json({ msg: "Token sent", token });
+      return res.json({ msg: "Token sent", token });
     } else {
-      res.status(400).json({ msg: "Already registered. Please log in." });
+      return res.status(400).json({ msg: "Already registered. Please log in." });
     }
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "Some error occurred" });
+    return res.status(500).json({ msg: "Some error occurred" });
   }
 });
 
 app.post("/login", async (req, res) => {
   const { username, password } = req.body;
-  const findUser = await users.findOne({ username });
 
+  if(!username || !password){
+    return res.status(400).json({msg: "Username and password both are required"});
+  }
+  
   try {
+    const findUser = await users.findOne({ username });  
+
     if (!findUser) {
       return res.status(400).json({ msg: "User does not exist. Please sign up." });
     }
 
+    if(findUser.password != password){
+      return res.status(401).json({msg: "Invalid credentials"});
+    }
+
     const token = jwt.sign({ username }, SECRET_KEY, { expiresIn: "1h" });
-    res.json({ msg: "Token generated", token });
+
+    return res.json({ msg: "Token generated", token });
   } catch (error) {
     console.error(error);
-    res.status(500).json({ msg: "Some error occurred" });
+    return res.status(500).json({ msg: "Some error occurred" });
   }
 });
 
-async function authenticateApp(req, res, next) {
+async function authenticateApp(req, res, next) {   
   try {
     const authHeader = req.headers.authorization;
     if (!authHeader) {
