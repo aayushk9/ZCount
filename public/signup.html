@@ -13,6 +13,7 @@
         <form id="signupForm">
             <input id="username" name="username" type="text" placeholder="Please enter your username">
             <input id="password" name="password" type="text" placeholder="Please enter your password">
+            <br>
             <button type="submit">Sign up</button>
         </form>
 
@@ -20,7 +21,7 @@
             document.getElementById("signupForm").addEventListener("submit", async (e) => {
                 e.preventDefault();
                 const username = document.getElementById("username").value;
-                const password = document.getElementById("password").value;
+                const password = document.getElementById("password").value;  
 
                const resposne = await fetch('/signin', {   
                 method: "post",
