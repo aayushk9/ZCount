@@ -1,4 +1,6 @@
-# ZCount: Track & Fix Your Sleep Debt   
+# ZCount
+
+**Track & Fix Your Sleep Debt.** 
 
 ##  Overview  
 ZCount is a simple yet effective **sleep debt tracker** that helps users analyze their sleep patterns. Enter your **daily sleep hours** for a minimum of 4 days and ZCount will calculate:  
